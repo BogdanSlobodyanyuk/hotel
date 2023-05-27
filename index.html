@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel</title>
+</head>
+<body>
+<div>post title: <span id="spanId"></span></div>
+
+<script type="text/javascript">
+
+    var apiUrl = 'http://localhost:8080/guests';
+    function httpGet(theUrl) {
+        let xmlHttpReg = new XMLHttpRequest();
+        xmlHttpReg.open("GET", theUrl, false);
+        xmlHttpReg.send(null);
+        return xmlHttpReg.responseText;
+    }
+    document.getElementById("spanId").innerText = httpGet(apiUrl);
+
+</script>
+
+</body>
+</html>
