@@ -15,7 +15,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomController {
 
+
+
     private final RoomService roomService;
+
 
     @PostMapping("/room/add")
     public ResponseEntity<Void> saveRoom(@RequestBody Room room) {
@@ -25,7 +28,7 @@ public class RoomController {
     }
 
     @GetMapping("/room/all")
-    public List<RoomDto> findAll (){return roomService.findAll();}
+    public List<RoomDto> findAll() {return roomService.findAll();}
 
 
     @PutMapping("/room/update")
@@ -35,12 +38,12 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @DeleteMapping("/room/delete/{id}")
-    public ResponseEntity<Void> deleteRoom (@PathVariable Integer id){
-        roomService.deleteRoom(id);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    @DeleteMapping("/room/delete")
+    public void deleteRoomById(@RequestBody Room room){
+        roomService.deleteRoom(room);
     }
+
 
 
 }

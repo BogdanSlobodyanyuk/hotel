@@ -1,6 +1,7 @@
 package com.robot.hotel.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.Constraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

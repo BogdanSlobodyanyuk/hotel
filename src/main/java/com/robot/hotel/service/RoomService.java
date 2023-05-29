@@ -6,6 +6,7 @@ import com.robot.hotel.domain.Room;
 import com.robot.hotel.dto.RoomDto;
 import com.robot.hotel.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +16,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomService {
 
+
     private final RoomRepository roomRepository;
 
     public void saveRoom(Room room) {
         roomRepository.save(room);
     }
 
-    public void deleteRoom (Integer id) {roomRepository.deleteById(id);}
+    public void deleteRoom (Room room) {roomRepository.delete(room);}
 
     public List<RoomDto> findAll() {
         return roomRepository.findAll().stream()
