@@ -2,7 +2,11 @@ package com.robot.hotel.domain;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.List;
 
 @Data
 @Table
@@ -11,24 +15,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Guest {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-
-    @Column
-    String firstName;
-
-    @Column
-    String secondName;
-
-    @Column
-    Integer passportNumber;
-
-    @ManyToOne
-    @JoinColumn (name = "guest_group_id")
-    Room roomNumber;
-
-
+    @Column(name = "Id", nullable = false, unique = true)
+    private Long id;
+    @Column(name = "Name")
+    private String name;
+    @Column(name = "Sure_name")
+    private String sureName;
+    @Column(name = "Passport_identification", unique = true)
+    private String passportNumber;
+    @Column(name = "Phone_number")
+    private String phoneNumber;
+    @OneToMany(mappedBy = "guestId")
+    private List<Reservation> reservations;
 
 }

@@ -1,12 +1,12 @@
 package com.robot.hotel.domain;
 
+
 import jakarta.persistence.*;
-import jakarta.validation.Constraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import org.hibernate.annotations.DynamicInsert;
 import java.util.List;
 
 @Data
@@ -15,21 +15,18 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
 public class Room {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer roomId;
-
-    @Column(unique = true)
-    String roomName;
-
-    @Column
-    Integer price;
-
-    @OneToMany(mappedBy = "roomNumber")
-    List<Guest> guests;
-
+    @Column(name = "Id", nullable = false, unique = true)
+    private Long id;
+    @Column(name = "Room_number", unique = true)
+    private String number;
+    @Column(name = "Max_guests")
+    private Integer maxGuests;
+    @OneToMany(mappedBy = "roomId")
+    private List<Reservation> reservations;
 
 
 }
