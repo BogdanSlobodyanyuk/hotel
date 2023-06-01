@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Table
@@ -21,15 +22,14 @@ import java.time.LocalDate;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id", nullable = false, unique = true)
+    @Column(name = "Id", nullable = false)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "Guest_id")
-    private Guest guestId;
+    @ManyToMany(mappedBy = "reservations")
+    private List <Guest> guests;
 
     @ManyToOne
-    @JoinColumn(name = "Room_id")
-    private Room roomId;
+    @JoinColumn(name = "Room")
+    private Room room;
 
     @Column(name = "Check_in")
     @Temporal(TemporalType.DATE)

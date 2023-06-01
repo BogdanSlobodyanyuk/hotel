@@ -19,13 +19,13 @@ import java.util.List;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id", nullable = false, unique = true)
+    @Column(name = "Id", nullable = false)
     private Long id;
     @Column(name = "Room_number", unique = true)
     private String number;
     @Column(name = "Max_guests")
     private Integer maxGuests;
-    @OneToMany(mappedBy = "roomId")
+    @OneToMany(mappedBy = "room")
     private List<Reservation> reservations;
 
 

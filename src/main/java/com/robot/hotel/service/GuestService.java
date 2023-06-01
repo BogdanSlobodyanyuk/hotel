@@ -2,10 +2,12 @@ package com.robot.hotel.service;
 
 
 import com.robot.hotel.domain.Guest;
+import com.robot.hotel.domain.Reservation;
 import com.robot.hotel.dto.GuestDto;
 import com.robot.hotel.repository.GuestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,16 +22,17 @@ public class GuestService {
         guestRepository.save(guest);
     }
 
+    public void deleteById(Long id) { guestRepository.deleteById(id);}
 
     public List<GuestDto> findAll() {
         return guestRepository.findAll().stream()
-                .map((Guest guest) -> buildGuestDto(guest))
+                .map(GuestService::buildGuestDto)
                 .collect(Collectors.toList());
     }
 
-    public GuestDto findById(Long id) {
-        Guest guest = guestRepository.findById(id).get();
-        return buildGuestDto(guest);
+
+    public Guest findById(Long id) {
+        return guestRepository.findById(id).get();
     }
 
 
@@ -39,12 +42,11 @@ public class GuestService {
 
 
     public GuestDto findByPassportNumber(String passportNumber) {
-        return buildGuestDto(guestRepository.findByPassport(passportNumber));
+        return buildGuestDto(guestRepository.findByPassportNumber(passportNumber));
     }
 
 
     public static GuestDto buildGuestDto(Guest guest) {
-
 
         return GuestDto.builder()
                 .name(guest.getName())
@@ -53,7 +55,7 @@ public class GuestService {
                 .phoneNumber(guest.getPhoneNumber())
                 .reservations(guest.getReservations()
                         .stream()
-                        .map(reservation -> reservation.getId())
+                        .map(Reservation::getId)
                         .collect(Collectors.toList()))
                 .build();
     }

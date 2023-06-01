@@ -17,7 +17,7 @@ import java.util.List;
 public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id", nullable = false, unique = true)
+    @Column(name = "Id")
     private Long id;
     @Column(name = "Name")
     private String name;
@@ -27,7 +27,10 @@ public class Guest {
     private String passportNumber;
     @Column(name = "Phone_number")
     private String phoneNumber;
-    @OneToMany(mappedBy = "guestId")
+    @ManyToMany
+    @JoinTable(name = "Guest_reservation",
+    joinColumns = {@JoinColumn(name = "Guest_id")},
+    inverseJoinColumns = {@JoinColumn(name = "Reservation_id")})
     private List<Reservation> reservations;
 
 }

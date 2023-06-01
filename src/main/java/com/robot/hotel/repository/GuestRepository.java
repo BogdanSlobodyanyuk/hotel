@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface GuestRepository extends JpaRepository<Guest, Long> {
 
    Guest findBySureName (String sureName);
-   Guest findByPassport (String passportNumber);
+   Guest findByPassportNumber (String passportNumber);
 
 
 

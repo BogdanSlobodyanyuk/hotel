@@ -13,6 +13,5 @@ public class GuestDto {
     private String sureName;
     private String passportNumber;
     private String phoneNumber;
-
     private List<Long> reservations;
 }

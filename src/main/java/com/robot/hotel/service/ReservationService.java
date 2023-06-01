@@ -1,6 +1,7 @@
 package com.robot.hotel.service;
 
 
+import com.robot.hotel.domain.Guest;
 import com.robot.hotel.domain.Reservation;
 import com.robot.hotel.domain.Room;
 import com.robot.hotel.dto.ReservationDto;
@@ -9,7 +10,6 @@ import com.robot.hotel.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,56 +22,50 @@ public class ReservationService {
 
     public void save(Reservation reservation) {
 
-        if (isReserveExists(reservation)) {
-            throw new IllegalArgumentException("Reservation has already been already created");
+        if (isReservationExisted(reservation)) {
+            throw new IllegalArgumentException("Reservation isn't allowed, room has already been reserved");
         } else {
             reservationRepository.save(reservation);
         }
     }
 
     public void deleteById(Long id) {
-        reservationRepository.deleteById(id);
+        reservationRepository.deleteById(id);}
+
+
+
+    public ReservationDto findById(Long id){
+
+        return buidReservationDto(reservationRepository.findById(id).get());
     }
 
 
-    public List<ReservationDto> findAll() {
+    public void changeRoom(String roomNumber, Long id) {
 
-        return reservationRepository.findAll()
-                .stream()
-                .map(ReservationService::buidReservationDto)
-                .collect(Collectors.toList());
-    }
+        Reservation reservation = reservationRepository.findById(id).get();
+        Room room = roomRepository.findRoomByNumber(roomNumber);
+        reservation.setRoom(room);
 
-
-
-
-    public void changeRoom(Long roomId, Long reservationId) {
-
-        Reservation reservation = reservationRepository.findById(reservationId).get();
-        Room room = roomRepository.findById(roomId).get();
-        reservation.setRoomId(room);
-
-        if (isReserveExists(reservation)) {
-            throw new IllegalArgumentException("Reservation has already been created");
-
+        if (isReservationExisted(reservation)) {
+            throw new IllegalArgumentException("Reservation isn't allowed, please choose another room");
         } else {
             reservationRepository.save(reservation);
         }
     }
 
-
-    private boolean isReserveExists(Reservation reservation) {
-        return reservationRepository.existsByRoomIdAndCheckInAndCheckOut(
-                reservation.getRoomId(), reservation.getCheckIn(), reservation.getCheckOut());
+    private boolean isReservationExisted(Reservation reservation) {
+        return reservationRepository.existsByRoomNumberAndCheckInBeforeAndCheckOutAfter(
+                reservation.getRoom().getNumber(), reservation.getCheckOut(), reservation.getCheckIn());
     }
 
 
     private static ReservationDto buidReservationDto(Reservation reservation) {
-
         return ReservationDto.builder()
-                .reservationID(reservation.getId())
-                .room(reservation.getRoomId().getNumber())
-                .guest(reservation.getGuestId().getName())
+                .room(reservation.getRoom().getNumber())
+                .guests(reservation.getGuests()
+                        .stream()
+                        .map(Guest::getName)
+                        .collect(Collectors.toList()))
                 .checkIn(reservation.getCheckIn())
                 .checkOut(reservation.getCheckOut())
                 .build();
