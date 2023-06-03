@@ -47,6 +47,7 @@ public class RoomService {
 
         for (Room room : availableRooms) {
             RoomDto roomDto = RoomDto.builder()
+                    .id(room.getId())
                     .number(room.getNumber())
                     .maxGuests(room.getMaxGuests())
                     .build();
@@ -55,13 +56,18 @@ public class RoomService {
         return availableRoomsDto;
     }
 
-    public RoomDto findByNumber(String number) {
+    public RoomDto findByNumberRoomDto(String number) {
         return buildRoomDto(roomRepository.findRoomByNumber(number));
+    }
+
+    public Room findByNumberRoomDomain(String number){
+        return roomRepository.findRoomByNumber(number);
     }
 
 
     private static RoomDto buildRoomDto(Room room) {
         return RoomDto.builder()
+                .id(room.getId())
                 .number(room.getNumber())
                 .maxGuests(room.getMaxGuests())
                 .reservations(room.getReservations()

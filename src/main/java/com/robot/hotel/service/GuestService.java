@@ -24,7 +24,7 @@ public class GuestService {
 
     public void deleteById(Long id) { guestRepository.deleteById(id);}
 
-    public List<GuestDto> findAll() {
+    public List<com.robot.hotel.dto.GuestDto> findAll() {
         return guestRepository.findAll().stream()
                 .map(GuestService::buildGuestDto)
                 .collect(Collectors.toList());
@@ -36,19 +36,25 @@ public class GuestService {
     }
 
 
-    public GuestDto findBySureName(String sureName) {
+    public com.robot.hotel.dto.GuestDto findBySureNameDto(String sureName) {
         return buildGuestDto(guestRepository.findBySureName(sureName));
     }
 
 
-    public GuestDto findByPassportNumber(String passportNumber) {
+
+    public GuestDto findByPassportNumberDto(String passportNumber) {
         return buildGuestDto(guestRepository.findByPassportNumber(passportNumber));
     }
 
+    public Guest findByPassportNumberDomain (String passportNumber){
+        return guestRepository.findByPassportNumber(passportNumber);
+    }
 
-    public static GuestDto buildGuestDto(Guest guest) {
 
-        return GuestDto.builder()
+    public static com.robot.hotel.dto.GuestDto buildGuestDto(Guest guest) {
+
+        return com.robot.hotel.dto.GuestDto.builder()
+                .id(guest.getId())
                 .name(guest.getName())
                 .sureName(guest.getSureName())
                 .passportNumber(guest.getPassportNumber())

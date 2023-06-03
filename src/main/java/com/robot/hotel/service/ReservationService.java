@@ -3,13 +3,13 @@ package com.robot.hotel.service;
 
 import com.robot.hotel.domain.Guest;
 import com.robot.hotel.domain.Reservation;
-import com.robot.hotel.domain.Room;
 import com.robot.hotel.dto.ReservationDto;
 import com.robot.hotel.repository.ReservationRepository;
 import com.robot.hotel.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final RoomRepository roomRepository;
+    private final RoomService roomService;
+    private final GuestService guestService;
 
 
     public void save(Reservation reservation) {
@@ -34,23 +35,33 @@ public class ReservationService {
 
 
 
-    public ReservationDto findById(Long id){
+    public ReservationDto findByIdDto(Long id){
 
         return buidReservationDto(reservationRepository.findById(id).get());
     }
 
+    public Reservation findByIdDomain (Long id){
 
-    public void changeRoom(String roomNumber, Long id) {
+        return reservationRepository.findById(id).get();
+    }
 
-        Reservation reservation = reservationRepository.findById(id).get();
-        Room room = roomRepository.findRoomByNumber(roomNumber);
-        reservation.setRoom(room);
 
-        if (isReservationExisted(reservation)) {
-            throw new IllegalArgumentException("Reservation isn't allowed, please choose another room");
-        } else {
-            reservationRepository.save(reservation);
+    public void update(Long id, ReservationDto reservationDto) {
+
+        Reservation reservationOldData = findByIdDomain(id);
+
+        reservationOldData.setRoom(roomService.findByNumberRoomDomain(reservationDto.getRoom()));
+
+        List<Guest> guests = null;
+
+        for (int i = 0; i < reservationOldData.getGuests().size(); i++){
+            guests.add(guestService.findByPassportNumberDomain(reservationDto.getGuests().get(i)));
         }
+
+        findByIdDomain(id).setGuests(guests);
+
+        save(reservationOldData);
+
     }
 
     private boolean isReservationExisted(Reservation reservation) {

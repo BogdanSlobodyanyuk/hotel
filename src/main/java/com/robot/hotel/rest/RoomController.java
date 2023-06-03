@@ -27,7 +27,7 @@ public class RoomController {
     @GetMapping("/room/number/{number}")
     public ResponseEntity<RoomDto> findByNumber(@PathVariable String number) {
         try {
-            return ResponseEntity.ok(roomService.findByNumber(number));
+            return ResponseEntity.ok(roomService.findByNumberRoomDto(number));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -39,38 +39,9 @@ public class RoomController {
     }
 
     @PostMapping("/room/save")
-    public ResponseEntity<Void> save(@RequestBody RoomDto roomDto) {
-
-        Room room = Room.builder()
-                .number(roomDto.getNumber())
-                .maxGuests(roomDto.getMaxGuests())
-                .build();
-
-        String firstNumber = room.getNumber();
-        RoomDto roomExample = roomService.findByNumber(firstNumber);
-        String secondNumber = roomExample.getNumber();
-
-        if (firstNumber.toLowerCase().equals(secondNumber.toLowerCase())) {
-            throw new IllegalArgumentException("Room is already added !");
-        } else {
+    public ResponseEntity<Void> save(@RequestBody Room room) {
             roomService.save(room);
-        }
         return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-
-    @PutMapping("/room/update/{id}")
-    public ResponseEntity<Void> update(@PathVariable("id") Long id, @RequestBody RoomDto roomDto) {
-
-        Room room = roomService.findById(id);
-
-        if (room == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            room.setNumber(roomDto.getNumber());
-            room.setMaxGuests(roomDto.getMaxGuests());
-        }
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/room/delete/id/{id}")
@@ -78,6 +49,23 @@ public class RoomController {
         roomService.deleteById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
+
+
+    @PutMapping("/room/update/{id}")
+    public ResponseEntity<Void> update(@PathVariable("id") Long id, @RequestBody RoomDto roomDto) {
+
+        Room roomOldData = roomService.findById(id);
+
+        if (roomOldData == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            roomOldData.setNumber(roomDto.getNumber());
+            roomOldData.setMaxGuests(roomDto.getMaxGuests());
+            roomService.save(roomOldData);
+        }
+        return ResponseEntity.ok().build();
+    }
+
 
 
 }

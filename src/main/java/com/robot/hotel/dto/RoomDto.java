@@ -9,6 +9,8 @@ import java.util.List;
 @Data
 @Builder
 public class RoomDto {
+
+    private Long id;
     private String number;
     private Integer maxGuests;
     private List<Long> reservations;
